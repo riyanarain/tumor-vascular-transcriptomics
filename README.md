@@ -39,7 +39,25 @@ pip install pandas numpy scikit-learn scanpy matplotlib seaborn
 ```
 
 ## Usage
-[To be added as scripts are developed]
+```bash
+# 1. Download data (manual download required for large files)
+python scripts/01_download_data.py
+
+# 2. Preprocess scRNA-seq data
+python scripts/02_preprocess_scrnaseq.py
+
+# 3. Extract endothelial cells
+python scripts/03_extract_endothelial.py
+
+# 4. Differential expression
+python scripts/04_differential_expression.py
+
+# 5. Pathway enrichment
+python scripts/05_pathway_enrichment.py
+
+# 6. Morphology + ML integration
+python scripts/06_morphology_ml.py
+```
 
 ## Results
 [To be added]
