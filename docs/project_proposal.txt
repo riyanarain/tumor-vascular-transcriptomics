@@ -1,0 +1,31 @@
+﻿Noemi Reche-Ley, Riya Narain
+
+
+Title: Quantitative Morphometric Analysis of Tumor-Induced Angiogenesis in Perfusable Microvascular Networks
+
+
+Specific Problem: Tumor growth and metastasis rely heavily on vascularization within the tumor microenvironment (TME). While animal models provide functional vasculature, they are expensive, low-throughput, and often poorly representative of human disease. In vitro tumor models offer a more scalable and controllable alternative, but many existing platforms fail to replicate physiologically relevant human vasculature or provide quantitative, high-resolution readouts needed for drug screening and mechanistic studies of tumor–vascular interactions.
+
+
+To address these limitations, Noemi developed a vascularized microphysiological tumor platform (µPTM) using a PDMS microfluidic chip that supports robust formation of perfusable microvascular networks. Introducing tumor spheroids into this system induces angiogenic remodeling, producing vascular networks that are structurally altered and functionally impaired compared to healthy controls, including reduced vessel diameters. These tumor-conditioned vascular phenotypes are known to impact perfusion, transport, and therapeutic response. Although these differences are visually apparent, there is currently no standardized quantitative framework to distinguish healthy from tumor-associated vasculature using image-based metrics alone. This limits the ability to rigorously evaluate and validate the platform.
+
+
+Main Hypothesis: We hypothesize that a feature-based, data-driven analysis of vascular morphology can identify characteristic architectural signatures of tumor-associated angiogenesis and enable reliable classification of healthy versus tumor-conditioned microvascular networks within the µPTM.
+
+
+The first of our two primary objectives is to establish a quantitative framework for characterizing microvascular network architecture by extracting topological and morphological features from high-resolution images of perfusable vessels before and after tumor introduction. Using the Angiogenesis Analyzer toolset, we will generate high-dimensional feature tables capturing metrics such as junction density, vessel connectivity, segment length, and sprouting behavior. We will then apply dimensionality reduction and supervised machine learning methods to assess whether these features can distinguish healthy from tumor-conditioned networks and to identify the specific architectural characteristics most strongly associated with tumor-induced vascular dysfunction.
+
+
+
+
+Why is this project interesting? This project bridges tissue engineering (organ-on-a-chip) with bioinformatics. By quantifying the architecture of these mini-tumor chips, we can better understand the physical barriers to therapy, moving toward a spatial bioinformatics model that could eventually be used for personalized medicine, testing therapies outside the body. This project is also very exciting because we will be using novel data that has not yet been published! 
+
+
+What has been done before? Previous studies have demonstrated the successful generation of perfusable microvascular networks in microfluidic and three-dimensional in vitro systems. Vascular morphology in these models is typically assessed using qualitative observations or a small set of semi-quantitative metrics such as vessel length, branch points, and area coverage. Tools like Angiogenesis Analyzer and AngioTool have enabled extraction of these descriptors, especially in angiogenesis assays. Extensive biological literature has also established that tumor-associated angiogenesis produces abnormal and dysfunctional vasculature.
+However, these vascular differences are usually evaluated using limited, hand-selected metrics rather than integrated into a standardized, data-driven framework. While machine learning is widely used in biomedical imaging fields such as histopathology and radiomics, vascular features from engineered in vitro systems are rarely used as inputs for trained classifiers. As a result, quantitative vascular descriptors are often used to support observations rather than to systematically classify or predict microenvironmental state.
+
+
+Data/Datasets: The primary dataset consists of high-resolution fluorescence confocal microscopy images from Noemi’s honors thesis research. This dataset includes images of healthy, perfusable microvascular networks that serve as baseline controls, as well as images of the same vascular architectures following the introduction of A549 tumer spheroids. From these images, high-dimensional feature tables containing over 20 morphological and topological descriptors per image will be generated using the Angiogenesis Analyzer toolset. These feature tables will serve as the primary inputs for downstream statistical and machine learning analyses.
+
+
+Bioinformatics Techniques: The primary bioinformatics techniques employed in this project include principal component analysis (PCA) for dimensionality reduction and visualization of clustering patterns between healthy and tumor-conditioned vascular networks, as well as supervised machine learning methods for classification and feature importance analysis. These models will be used to identify which vascular morphology and topology metrics are most informative for distinguishing tumor-influenced networks from healthy controls. Data preprocessing and normalization will be performed in Python to ensure proper scaling and consistency across high-dimensional feature sets generated from image-based analysis.
