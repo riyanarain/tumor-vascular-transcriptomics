@@ -5,7 +5,7 @@ Explore the structure of GSE131907 data files
 import pandas as pd
 from pathlib import Path
 
-# Use the correct path where files actually are
+# Path for where files actually are
 data_dir = Path("../data/raw/GSE131907")
 
 print("=== Checking Annotation File ===")
