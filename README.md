@@ -13,6 +13,17 @@ This project analyzes single-cell RNA-seq data (GSE131907) to identify molecular
 - **GSE131907**: Single-cell RNA-seq from 44 lung adenocarcinoma patients (208,506 cells)
 - **µPTM Images**: Confocal microscopy of perfusable microvascular networks
 
+## Data Files
+
+### Available in Repository (< 10 MB each):
+- `data/processed/endothelial_cells.h5ad` - All 1,996 endothelial cells
+- `data/processed/tumor_endothelial.h5ad` - Tumor-associated ECs
+- `data/processed/normal_endothelial.h5ad` - Normal tissue ECs
+
+### Not in Repository (too large):
+- `data/raw/*` - Raw data from GEO (download with scripts)
+- `data/processed/GSE131907_processed.h5ad` (21 GB) - Full dataset with all cell types
+
 ## Workflow
 1. Download and preprocess GSE131907 data
 2. Extract and annotate endothelial cells
