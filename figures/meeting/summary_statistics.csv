@@ -1,0 +1,7 @@
+Metric,Value
+Total Cells,1996
+Total Genes,27578
+Tumor ECs,655
+Normal ECs,1341
+Highly Variable Genes,2000
+Available Markers,"VEGFA, PECAM1, VWF, CDH5, FLT1, KDR, ANGPT2"
