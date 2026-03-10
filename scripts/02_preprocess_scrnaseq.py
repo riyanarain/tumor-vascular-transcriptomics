@@ -1,5 +1,5 @@
 """
-Preprocess single-cell RNA-seq data (Memory-efficient version)
+Preprocess single-cell RNA-seq data
 Load, filter, and normalize GSE131907 data
 """
 

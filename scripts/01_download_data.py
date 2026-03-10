@@ -1,7 +1,5 @@
 """
 Download GSE131907 data from GEO
-Author: Noemi Reche-Ley, Riya Narain
-Date: 2026-02-14
 """
 
 import GEOparse
