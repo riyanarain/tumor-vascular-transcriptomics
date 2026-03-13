@@ -2,6 +2,7 @@
 Integrated transcriptomic analysis of tumor-induced vascular dysfunction in lung adenocarcinoma.
 
 **BMDS 205 · Stanford University · Winter 2026**
+
 **Authors:** Noemi Reche-Ley & Riya Narain
 
 ---
