@@ -1,77 +1,83 @@
 # Tumor Vascular Transcriptomics
+Integrated transcriptomic analysis of tumor-induced vascular dysfunction in lung adenocarcinoma.
 
-Integrated transcriptomic and morphometric analysis of tumor-induced vascular dysfunction in lung adenocarcinoma.
+**BMDS 205 · Stanford University · Winter 2026**
+**Authors:** Noemi Reche-Ley & Riya Narain
+
+---
 
 ## Project Overview
-This project analyzes single-cell RNA-seq data (GSE131907) to identify molecular signatures of tumor-associated endothelial dysfunction and integrates these findings with morphometric analysis of vascularized microphysiological tumor platforms (µPTM).
+We applied unsupervised clustering and differential expression analysis to single-cell RNA sequencing data from 44 lung adenocarcinoma patients to identify transcriptionally distinct endothelial cell populations. We identified a tumor-enriched angiogenic EC cluster (Cluster 2) defined by PLVAP, CD34, COL4A1, SPARC, and RGCC, consistent with increased vascular permeability and ECM remodeling.
 
-## Team
-- Noemi Reche-Ley
-- Riya Narain
+**Dataset:** GSE131907 (Kim et al., Nat Commun 2020) — 208,506 cells from 44 LUAD patients
 
-## Datasets
-- **GSE131907**: Single-cell RNA-seq from 44 lung adenocarcinoma patients (208,506 cells)
-- **µPTM Images**: Confocal microscopy of perfusable microvascular networks
+---
 
-## Data Files
+## Repository Structure
+```
+scripts/          # Analysis pipeline (run in order)
+figures/          # All generated figures
+results/          # CSV outputs from analyses
+data/processed/   # Small processed files (large files excluded)
+```
 
-### Available in Repository (< 10 MB each):
-- `data/processed/endothelial_cells.h5ad` - All 1,996 endothelial cells
-- `data/processed/tumor_endothelial.h5ad` - Tumor-associated ECs
-- `data/processed/normal_endothelial.h5ad` - Normal tissue ECs
+---
 
-### Not in Repository (too large):
-- `data/raw/*` - Raw data from GEO (download with scripts)
-- `data/processed/GSE131907_processed.h5ad` (21 GB) - Full dataset with all cell types
+## Analysis Pipeline
 
-## Workflow
-1. Download and preprocess GSE131907 data
-2. Extract and annotate endothelial cells
-3. Perform differential expression analysis (tumor vs. normal ECs)
-4. Pathway enrichment analysis (GSEA)
-5. Morphometric feature extraction from images
-6. Machine learning integration of transcriptomic and morphometric data
+| Script | Description |
+|--------|-------------|
+| `01_download_data.py` | Download GSE131907 from GEO |
+| `02_preprocess_scrnaseq.py` | QC, CPM normalization, log transform |
+| `03_extract_endothelial.py` | Extract 1,996 endothelial cells |
+| `04_exploratory_analysis.py` | PCA, UMAP, marker validation |
+| `05_clustering_analysis.py` | Leiden clustering, cluster annotation |
+| `06_differential_expression.py` | Wilcoxon DE, volcano plot |
+| `07_pathway_enrichment.py` | GSEA against KEGG and GO BP |
+| `08_final_cleanup.py` | Remove contamination, annotate final dataset |
 
-## Requirements
-- R (≥4.0) with Seurat, DESeq2, clusterProfiler
-- Python (≥3.8) with pandas, scikit-learn, scanpy
-- ImageJ/Fiji with Angiogenesis Analyzer plugin
+---
 
 ## Installation
 ```bash
 # Clone repository
-git clone https://github.com/YOUR-USERNAME/tumor-vascular-transcriptomics.git
+git clone https://github.com/riyanarain/tumor-vascular-transcriptomics.git
+cd tumor-vascular-transcriptomics
 
-# Install R packages
-Rscript -e "install.packages(c('Seurat', 'DESeq2', 'clusterProfiler'))"
+# Create conda environment
+conda create -n tumor-vascular python=3.10
+conda activate tumor-vascular
 
-# Install Python packages
-pip install pandas numpy scikit-learn scanpy matplotlib seaborn
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-## Usage
-```bash
-# 1. Download data (manual download required for large files)
-python scripts/01_download_data.py
+---
 
-# 2. Preprocess scRNA-seq data
-python scripts/02_preprocess_scrnaseq.py
+## Data
+Raw data files are not included due to size. Download from GEO:
+- **GSE131907**: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE131907
+- Run `scripts/01_download_data.py` to download automatically
 
-# 3. Extract endothelial cells
-python scripts/03_extract_endothelial.py
+---
 
-# 4. Differential expression
-python scripts/04_differential_expression.py
+## Key Findings
+- 6 biologically distinct EC populations identified
+- Cluster 2 (Tumor Angiogenic EC): 59% tumor-derived, 1.8-fold enrichment
+- Key markers: PLVAP (+2.35 log₂FC), CD34 (+2.22), COL4A1 (+1.78), SPARC, RGCC
+- GSEA confirms ECM remodeling and biosynthetic reprogramming in tumor ECs
+- Normal ECs enriched for immune surveillance pathways
 
-# 5. Pathway enrichment
-python scripts/05_pathway_enrichment.py
+---
 
-# 6. Morphology + ML integration
-python scripts/06_morphology_ml.py
-```
+## Requirements
+See `requirements.txt` for full list. Key packages:
+- scanpy >= 1.9.0
+- gseapy >= 1.0.4
+- lifelines >= 0.27.0
+- pandas, numpy, matplotlib, seaborn
 
-## Results
-[To be added]
+---
 
-## References
-- Kim N et al. (2020) Single-cell RNA sequencing demonstrates the molecular and cellular reprogramming of metastatic lung adenocarcinoma. Nat Commun.
+## Reference
+Kim N et al. Single-cell RNA sequencing demonstrates the molecular and cellular reprogramming of metastatic lung adenocarcinoma. *Nat Commun* 11, 2285 (2020).
