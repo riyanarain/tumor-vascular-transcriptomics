@@ -1,5 +1,5 @@
 """
-Generate figures and summary for Tuesday meeting
+Generate figures and summary for mid-project meeting
 """
 
 import scanpy as sc
