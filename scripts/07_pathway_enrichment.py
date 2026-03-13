@@ -1,11 +1,6 @@
 """
-Script 06: Pathway Enrichment Analysis (GSEA)
-Project: Tumor Vascular Transcriptomics
-Author: Riya Narain
-Date: March 2026
-
-Goal: Identify which biological pathways are enriched in Cluster 2 (Tumor Angiogenic ECs)
-      compared to Cluster 1 (Normal Quiescent ECs) using pre-ranked GSEA.
+Identify which biological pathways are enriched in Cluster 2 (Tumor Angiogenic ECs)
+compared to Cluster 1 (Normal Quiescent ECs) using pre-ranked GSEA.
 """
 
 import pandas as pd
@@ -71,7 +66,7 @@ os.makedirs('../results/gsea_kegg', exist_ok=True)
 kegg_results = gp.prerank(
     rnk=ranked_genes,
     gene_sets='KEGG_2021_Human',
-    outdir='results/gsea_kegg',
+    outdir='../results/gsea_kegg',
     min_size=10,
     max_size=500,
     permutation_num=1000,
@@ -90,7 +85,7 @@ print(f"  Significant (FDR<0.25): {(kegg_df['FDR q-val'] < 0.25).sum()}")
 # ─────────────────────────────────────────────
 print("\nRunning prerank GSEA on GO Biological Process...")
 
-os.makedirs('results/gsea_gobp', exist_ok=True)
+os.makedirs('../results/gsea_gobp', exist_ok=True)
 
 gobp_results = gp.prerank(
     rnk=ranked_genes,
