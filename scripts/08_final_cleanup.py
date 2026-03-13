@@ -15,29 +15,18 @@ warnings.filterwarnings('ignore')
 sc.settings.verbosity = 1
 
 # Load clustered endothelial dataset
-
 print("Loading clustered endothelial dataset...")
 adata = sc.read_h5ad('../data/processed/endothelial_clustered.h5ad')
-print(f"  Loaded: {adata.shape[0]} cells x {adata.shape[1]} genes")
-print(f"  Clusters: {sorted(adata.obs['leiden'].unique().tolist())}")
-print(f"\nCluster sizes before cleanup:")
-print(adata.obs['leiden'].value_counts().sort_index())
 
 # Remove Cluster 5
-print(f"  Cells before removal: {adata.shape[0]}")
 contamination_mask = adata.obs['leiden'] != '6'
 adata_clean = adata[contamination_mask].copy()
-print(f"  Cells removed: {(~contamination_mask).sum()} (immune cells: PTPRC+, CD52+, CD37+)")
-print(f"  Cells after removal: {adata_clean.shape[0]}")
 
-# Add biological cluster annotations
-print("\nAdding biological cluster annotations...")
-
-# Based on differential expression results and marker gene analysis
+# Add biological cluster annotations, based on differential expression results and marker gene analysis
 cluster_annotations = {
     '0': 'Venular/Stalk EC',        # ACKR1, CLU, C7, VWF
     '1': 'Normal Quiescent EC',     # FCN3, IL7R, EPAS1
-    '2': 'Tumor Angiogenic EC',     # RGCC, SPARC, COL4A1, CD34, PLVAP ← KEY FINDING
+    '2': 'Tumor Angiogenic EC',     # RGCC, SPARC, COL4A1, CD34, PLVAP 
     '3': 'Lymphatic EC',            # CCL21, TFF3, PROX1, PDPN
     '4': 'Normal Activated EC',     # HPGD, ITM2B, EDNRB
     '5': 'Arterial EC',             # GJA5, EFNB2, IGFBP3
@@ -59,17 +48,11 @@ adata_clean.obs['is_tumor_angiogenic'] = (
     adata_clean.obs['leiden'] == '2'
 ).astype(bool)
 
-print(f"\n  Tumor Angiogenic ECs (Cluster 2): {adata_clean.obs['is_tumor_angiogenic'].sum()} cells")
-
 # Save final annotated dataset
 output_path = '../data/processed/endothelial_final_annotated.h5ad'
 adata_clean.write_h5ad(output_path)
-print(f"\n  Saved: {output_path}")
 
 # Generate final summary figures
-
-print("\nGenerating final annotation figures...")
-
 os.makedirs('../figures/final', exist_ok=True)
 
 # Color palette for biological clusters
@@ -82,7 +65,7 @@ cluster_colors = {
     'Arterial EC':           '#a65628',
 }
 
-# Panel 1: UMAP colored by biological cell state
+# Create UMAP colored by biological cell state
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
 sc.pl.umap(
@@ -111,9 +94,8 @@ plt.suptitle('Final Annotated Endothelial Cell Atlas — LUAD', fontsize=14, fon
 plt.tight_layout()
 plt.savefig('../figures/final/umap_final_annotated.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("  Saved: figures/final/umap_final_annotated.png")
 
-# Panel 2: Composition bar chart — % tumor per cluster
+# Make composition bar chart with percentage tumor per cluster
 fig, ax = plt.subplots(figsize=(9, 5))
 
 comp = adata_clean.obs.groupby(['cell_state', 'tissue_category']).size().unstack(fill_value=0)
@@ -136,7 +118,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=30, ha='right', fontsize=10)
 ax.legend(title='Tissue', fontsize=10)
 ax.axhline(50, color='black', linestyle='--', linewidth=0.8, alpha=0.5, label='50%')
 
-# Annotate Cluster 2 bar
+# annotate Cluster 2 bar
 for i, label in enumerate(comp_pct.index):
     if label == 'Tumor Angiogenic EC':
         ax.annotate('★ Key Finding', xy=(i, 120), ha='center', fontsize=9,
@@ -145,21 +127,7 @@ for i, label in enumerate(comp_pct.index):
 plt.tight_layout()
 plt.savefig('../figures/final/composition_barplot.png', dpi=150, bbox_inches='tight')
 plt.close()
-print("  Saved: figures/final/composition_barplot.png")
 
-# Export final cell metadata as CSV
+# Export final cell metadata as csv
 metadata = adata_clean.obs[['leiden', 'cell_state', 'tissue_category', 'is_tumor_angiogenic']].copy()
 metadata.to_csv('../results/final_cell_metadata.csv')
-print("  Saved: results/final_cell_metadata.csv")
-
-# Print final summary
-print("\n" + "="*55)
-print("FINAL DATASET SUMMARY")
-print("="*55)
-print(f"Total endothelial cells (clean): {adata_clean.shape[0]}")
-print(f"Removed (immune contamination):  103 cells")
-print(f"Genes retained:                  {adata_clean.shape[1]}")
-print(f"\nCell state breakdown:")
-state_counts = adata_clean.obs['cell_state'].value_counts()
-for state, count in state_counts.items():
-    print(f"  {state:30s}: {count} cells")

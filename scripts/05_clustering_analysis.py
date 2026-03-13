@@ -1,3 +1,11 @@
+"""
+Unsupervised Leiden clustering of endothelial cells from GSE131907.
+
+Computes k-nearest neighbor graph (k=15), applies Leiden clustering (resolution=0.5),
+and generates UMAP visualization colored by cluster, tissue category, and sample origin.
+Runs Wilcoxon rank-sum test to identify top marker genes per cluster.
+"""
+
 import scanpy as sc
 import pandas as pd
 
@@ -12,21 +20,19 @@ sc.tl.umap(adata)
 # Visualize clusters
 sc.pl.umap(adata, color=['leiden', 'tissue_category', 'Sample_Origin'], legend_loc='best')
 
-
 # Check if clusters correspond to tissue type, sample, or something else
 print("\nCluster composition by tissue category:")
 cluster_by_tissue = pd.crosstab(
     adata.obs['leiden'], 
     adata.obs['tissue_category']
 )
-print(cluster_by_tissue)
+print(cluster_by_tissue)  # debugging 
 
-print("\nCluster composition by sample origin:")
 cluster_by_sample_origin = pd.crosstab(
     adata.obs['leiden'], 
     adata.obs['Sample_Origin']
 )
-print(cluster_by_sample_origin)
+print(cluster_by_sample_origin)  # debugging 
 
 # Save
 adata.write("../data/processed/endothelial_clustered.h5ad")

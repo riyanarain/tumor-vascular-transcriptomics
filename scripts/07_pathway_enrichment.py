@@ -11,29 +11,13 @@ matplotlib.use('Agg')
 import os
 import warnings
 warnings.filterwarnings('ignore')
-
-# Install gseapy if needed:
-# pip install gseapy
-
 import gseapy as gp
 from gseapy import barplot, dotplot
 
-# ─────────────────────────────────────────────
-# 1. Load DEG results
-# ─────────────────────────────────────────────
-print("Loading DEG results...")
-
+# Load in DEG results
 deg = pd.read_csv('../results/cluster2_vs_cluster1_DEG.csv')
-print(f"  Loaded {len(deg)} genes")
-print(deg.head())
 
-# ─────────────────────────────────────────────
-# 2. Prepare ranked gene list for prerank GSEA
-#    Ranking metric: sign(logFC) * -log10(pval)
-#    This captures both direction and significance
-# ─────────────────────────────────────────────
-print("\nPreparing ranked gene list...")
-
+# Prepare ranked gene list for prerank GSEA
 deg = deg.dropna(subset=['logfoldchanges', 'pvals'])
 deg['pvals_safe'] = deg['pvals'].clip(lower=1e-300)  # avoid log(0)
 deg['rank_metric'] = np.sign(deg['logfoldchanges']) * -np.log10(deg['pvals_safe'])
@@ -56,11 +40,7 @@ os.makedirs('results', exist_ok=True)
 ranked_genes.to_csv('../results/ranked_gene_list.csv')
 print("  Saved: results/ranked_gene_list.csv")
 
-# ─────────────────────────────────────────────
-# 3. Run prerank GSEA — KEGG pathways
-# ─────────────────────────────────────────────
-print("\nRunning prerank GSEA on KEGG pathways...")
-
+# Run prerank GSEA: KEGG pathways
 os.makedirs('../results/gsea_kegg', exist_ok=True)
 
 kegg_results = gp.prerank(
@@ -80,11 +60,7 @@ kegg_df.to_csv('../results/gsea_kegg_results.csv', index=False)
 print(f"  KEGG: {len(kegg_df)} pathways tested")
 print(f"  Significant (FDR<0.25): {(kegg_df['FDR q-val'] < 0.25).sum()}")
 
-# ─────────────────────────────────────────────
-# 4. Run prerank GSEA — GO Biological Process
-# ─────────────────────────────────────────────
-print("\nRunning prerank GSEA on GO Biological Process...")
-
+# Run prerank GSEA: GO Biological Process
 os.makedirs('../results/gsea_gobp', exist_ok=True)
 
 gobp_results = gp.prerank(
@@ -104,18 +80,14 @@ gobp_df.to_csv('../results/gsea_gobp_results.csv', index=False)
 print(f"  GO BP: {len(gobp_df)} pathways tested")
 print(f"  Significant (FDR<0.25): {(gobp_df['FDR q-val'] < 0.25).sum()}")
 
-# ─────────────────────────────────────────────
-# 5. Visualize top results — KEGG
-# ─────────────────────────────────────────────
-print("\nGenerating figures...")
-
+# Visualize top results — KEGG
 os.makedirs('../figures/pathway_enrichment', exist_ok=True)
 
 def plot_top_pathways(df, title, filename, n=15, fdr_cutoff=0.25):
     """Bar plot of top enriched and depleted pathways."""
     sig = df[df['FDR q-val'] < fdr_cutoff].copy()
     if len(sig) == 0:
-        print(f"  Warning: No significant pathways at FDR<{fdr_cutoff} for {title}")
+        print(f"No significant pathways at FDR<{fdr_cutoff} for {title}")
         sig = df.head(20)  # show top 20 by NES anyway
 
     top_up = sig[sig['NES'] > 0].head(n)
@@ -166,34 +138,7 @@ plot_top_pathways(
     '../figures/pathway_enrichment/gobp_enrichment_barplot.png'
 )
 
-# ─────────────────────────────────────────────
-# 6. Enrichment plot for key pathways of interest
-# ─────────────────────────────────────────────
-def plot_enrichment_curve(results_obj, term_keyword, filename):
-    """Plot GSEA enrichment curve for a specific pathway."""
-    terms = results_obj.res2d['Term'].tolist()
-    match = [t for t in terms if term_keyword.lower() in t.lower()]
-    if not match:
-        print(f"  Warning: No pathway matching '{term_keyword}' found")
-        return
-    term = match[0]
-    try:
-        ax = results_obj.plot(terms=term, show_ranking=True, legend_kws={'loc': 'upper left'})
-        plt.title(f'GSEA Enrichment: {term[:60]}', fontsize=10, fontweight='bold')
-        plt.tight_layout()
-        plt.savefig(filename, dpi=150, bbox_inches='tight')
-        plt.close()
-        print(f"  Saved: {filename}")
-    except Exception as e:
-        print(f"  Could not plot enrichment curve for '{term}': {e}")
-
-plot_enrichment_curve(kegg_results, 'angiogen', '../figures/pathway_enrichment/enrichment_curve_angiogenesis.png')
-plot_enrichment_curve(kegg_results, 'ECM', '../figures/pathway_enrichment/enrichment_curve_ecm.png')
-plot_enrichment_curve(gobp_results, 'blood vessel', '../figures/pathway_enrichment/enrichment_curve_blood_vessel.png')
-
-# ─────────────────────────────────────────────
-# 7. Summary table of top findings
-# ─────────────────────────────────────────────
+# Generate summary table 
 print("\nTop KEGG pathways enriched in Tumor ECs (Cluster 2):")
 top_kegg = kegg_df[kegg_df['NES'] > 0].head(10)[['Term', 'NES', 'FDR q-val', 'Lead_genes']]
 print(top_kegg.to_string(index=False))
@@ -201,10 +146,3 @@ print(top_kegg.to_string(index=False))
 print("\nTop GO BP pathways enriched in Tumor ECs (Cluster 2):")
 top_gobp = gobp_df[gobp_df['NES'] > 0].head(10)[['Term', 'NES', 'FDR q-val', 'Lead_genes']]
 print(top_gobp.to_string(index=False))
-
-print("\n✅ Pathway enrichment analysis complete!")
-print("Outputs saved to:")
-print("  results/gsea_kegg_results.csv")
-print("  results/gsea_gobp_results.csv")
-print("  results/ranked_gene_list.csv")
-print("  figures/pathway_enrichment/")
