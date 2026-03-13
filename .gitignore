@@ -1,0 +1,14 @@
+# System files
+.DS_Store
+
+# Large data files
+*.h5ad
+data/raw/
+data/processed/
+
+# Notebooks
+notebooks/.ipynb_checkpoints/
+
+# GSEA output folders
+results/gsea_gobp/
+results/gsea_kegg/
